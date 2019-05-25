@@ -1,14 +1,20 @@
 # users/admin.py
 from django.contrib import admin
-from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
-from .models import CustomUser, Department, Products
+from .models import CustomUser, Department, Product
 
 
+@admin.register(CustomUser)  # Register model shortcut
 class CustomUserAdmin(UserAdmin):
-    model = CustomUser
     list_display = ['username', 'email', 'bio']
 
 
-admin.site.register(CustomUser, CustomUserAdmin)
+@admin.register(Department)
+class DepartmentAdmin(admin.ModelAdmin):
+    list_display = ['name', 'over_head_costs']
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ['name', 'department', 'price', 'stock_quantity', 'product_sales']
