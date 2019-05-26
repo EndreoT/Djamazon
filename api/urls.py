@@ -4,12 +4,13 @@ from api import views
 
 
 urlpatterns = [
-    path('users/', views.UserList.as_view()),
-    path('users/<int:pk>/', views.UserDetail.as_view()),
-    path('departments/', views.DepartmentList.as_view()),
-    path('departments/<int:pk>/', views.DepartmentDetail.as_view()),
-    path('products/', views.ProductList.as_view()),
-    path('products/<int:pk>/', views.ProductDetail.as_view()),
+    path('', views.api_root),
+    path('users/', views.UserList.as_view(), name='customuser-list'),
+    path('users/<int:pk>/', views.UserDetail.as_view(), name='customuser-detail'),
+    path('departments/', views.DepartmentList.as_view(), name='department-list'),
+    path('departments/<int:pk>/', views.DepartmentDetail.as_view(), name='department-detail'),
+    path('products/', views.ProductList.as_view(), name='product-list'),
+    path('products/<int:pk>/', views.ProductDetail.as_view(), name='product-detail'),
 ]
 
 # urlpatterns = format_suffix_patterns(urlpatterns)

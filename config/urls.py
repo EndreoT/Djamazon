@@ -18,6 +18,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api-auth', include('rest_framework.urls')),  # allows login on api urls
+    path('api-auth', include('rest_framework.urls')),  # allows login to browsable API
     path('api/', include('api.urls')),
 ]

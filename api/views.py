@@ -2,6 +2,21 @@ from rest_framework import generics, permissions
 from django.contrib.auth import get_user_model
 from .serializers import UserSerializer, DepartmentSerializer, ProductSerializer
 from .models import Department, Product
+from .permissions import IsOwnerOrReadOnly
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+
+
+# Entry point on /api/
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'users': reverse('customuser-list', request=request, format=format),
+        'departments': reverse('department-list', request=request, format=format),
+        'products': reverse('department-list', request=request, format=format),
+    })
 
 
 class UserList(generics.ListCreateAPIView):
@@ -17,8 +32,10 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 class DepartmentList(generics.ListCreateAPIView):
   queryset = Department.objects.all()
   serializer_class = DepartmentSerializer
-  permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+  # Can only write if authenticated
+  permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
 
+  # Links user creater to created_by field
   def perform_create(self, serializer):
     serializer.save(created_by=self.request.user)
 
@@ -26,7 +43,7 @@ class DepartmentList(generics.ListCreateAPIView):
 class DepartmentDetail(generics.RetrieveUpdateDestroyAPIView):
   queryset = Department.objects.all()
   serializer_class = DepartmentSerializer
-  permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+  permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
 
 class ProductList(generics.ListCreateAPIView):
   queryset = Product.objects.all()
