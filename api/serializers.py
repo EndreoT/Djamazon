@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from .models import Department, Product
 
 # HyperlinkedModelSerializer user field 'url'
@@ -11,6 +12,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 		model = get_user_model()
 		fields = ('url', 'id', 'username', 'email', 'groups', 'bio')  # select only certain fields
 
+
+class GroupSerializer(serializers.HyperlinkedModelSerializer):
+
+	class Meta:
+		model = Group
+		fields = ('url', 'id', 'name')
 
 class DepartmentSerializer(serializers.HyperlinkedModelSerializer):
 	products = serializers.HyperlinkedRelatedField(view_name='product-detail', many=True, queryset=Product.objects.all())  # allows lookup of all product ids for each department
