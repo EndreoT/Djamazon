@@ -8,7 +8,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 # Create a router and register our viewsets with it
-router.register(r'customusers', UserViewSet)
+router.register(r'users', UserViewSet)
 router.register(r'groups', GroupViewSet)
 router.register(r'departments', DepartmentViewSet)
 router.register(r'products', ProductViewSet)
@@ -22,7 +22,7 @@ urlpatterns = [
 
 
 
-# # Url pattenrns using Viewset classes
+# # Url patterns using Viewset classes
 # user_list = UserViewSet.as_view({
 #     'get': 'list'
 # })

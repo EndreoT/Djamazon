@@ -2,10 +2,10 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import CustomUser, Department, Product
+from .models import User, Department, Product
 
 
-@admin.register(CustomUser)  # Register model shortcut
+@admin.register(User)  # Register model shortcut
 class CustomUserAdmin(UserAdmin):
     list_display = ['username', 'email', 'bio']
 
