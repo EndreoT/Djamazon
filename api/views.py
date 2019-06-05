@@ -3,9 +3,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from .serializers import UserSerializer, DepartmentSerializer, ProductSerializer, GroupSerializer, ValidateIntegerSerializer
+from .serializers import UserSerializer, DepartmentSerializer, ProductSerializer, GroupSerializer, ValidatePurchaseSerializer, ValidateAddStockSerializer
 from .models import Department, Product
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsCustomer, IsSupervisorOrReadOnly, IsSupervisor, IsManager, IsManagerOrReadOnly
 
 # from rest_framework.decorators import api_view
 # from rest_framework.response import Response
@@ -26,13 +26,13 @@ from .permissions import IsOwnerOrReadOnly
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
   queryset = get_user_model().objects.all()
   serializer_class = UserSerializer
-  permission_classes = (permissions.IsAdminUser,)
+  permission_classes = (permissions.IsAdminUser | IsManager,)
 
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
   queryset = Group.objects.all()
   serializer_class = GroupSerializer
-  permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+  permission_classes = (permissions.IsAdminUser | IsManager,)
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):
@@ -43,7 +43,7 @@ class DepartmentViewSet(viewsets.ModelViewSet):
   queryset = Department.objects.all()
   serializer_class = DepartmentSerializer
   # Can only write if authenticated
-  permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
+  permission_classes = (IsManagerOrReadOnly,)
 
   # Links user creater to created_by field
   def perform_create(self, serializer):
@@ -53,29 +53,41 @@ class DepartmentViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
   queryset = Product.objects.all()
   serializer_class = ProductSerializer
-  permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+  permission_classes = (IsSupervisorOrReadOnly | IsManager,)
 
   def get_serializer_class(self):
     if self.action == 'purchase_product':
-        return ValidateIntegerSerializer
+        return ValidatePurchaseSerializer
+    elif self.action == 'add_stock':
+      return ValidateAddStockSerializer
     else:
         return ProductSerializer
   
   @action(
-    methods=['put'], detail=True, permission_classes=[permissions.IsAdminUser],
+    methods=['put'], detail=True, permission_classes=[IsCustomer],
     url_path='purchase', url_name='purchase'
   )
   def purchase_product(self, request, pk=None): # route on api/products/<pk>/purchase
     product = Product.objects.get(pk=pk)
     stockToPurchase = request.data
-    serializer = ValidateIntegerSerializer(data=stockToPurchase)
+    serializer = ValidatePurchaseSerializer(data=stockToPurchase)
     if serializer.is_valid():
-      totalCost = product.purchaseStock(serializer.validated_data)
-      return Response(totalCost, status=status.HTTP_200_OK)
+      totalCost = product.purchase_stock(serializer.validated_data['stock_to_purchase'])
+      return Response({'Cost of sale': totalCost}, status=status.HTTP_200_OK)
     return Response(serializer.errors)
   
-  
-
+  @action(
+    methods=['get', 'put'], detail=True, permission_classes=[IsSupervisor | IsManager],
+    url_path='add_stock', url_name='add_stock'
+  )
+  def add_stock(self, request, pk=None):
+    product = Product.objects.get(pk=pk)
+    stockToAdd = request.data
+    serializer = ValidateAddStockSerializer(data=stockToAdd)
+    if serializer.is_valid():
+      product.add_stock(serializer.validated_data['stock_to_add'])
+      return Response(serializer.validated_data, status=status.HTTP_200_OK)
+    return Response(serializer.errors)
 
 
 # class UserList(generics.ListCreateAPIView):

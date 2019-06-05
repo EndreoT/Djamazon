@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.schemas import get_schema_view
+from rest_framework_simplejwt import views as jwt_views
 
 schema_view = get_schema_view(title='Pastebin API')
 
@@ -25,4 +26,7 @@ urlpatterns = [
     path('', include('api.urls')),
     path('api/', include('api.urls')),
     path('schema/', schema_view),
+    path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/verify/', jwt_views.TokenVerifyView.as_view(), name='token_verify'),
 ]

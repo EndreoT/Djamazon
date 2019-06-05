@@ -22,7 +22,7 @@ class Product(models.Model):
     stock_quantity = models.IntegerField()
     product_sales = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
-    def purchaseStock(self, numUnits: int) -> float:
+    def purchase_stock(self, numUnits: int) -> float:
         if self.stock_quantity - numUnits < 0:
             return -1
         cost: float = numUnits * self.price
@@ -31,7 +31,7 @@ class Product(models.Model):
         self.save()
         return cost
 
-    def increaseStock(self, numUnits: int) -> None:
+    def add_stock(self, numUnits: int) -> None:
         self.stock_quantity += numUnits
         self.save()
 

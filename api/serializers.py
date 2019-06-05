@@ -41,19 +41,30 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
 		
 	def validate(self, data):
 		if data['price'] < 0 or data['stock_quantity'] < 0 or data['product_sales'] < 0:
-			raise serializers.ValidationError('Price, stock quantity, and product sale numbers must all be >= 0.')
+			raise serializers.ValidationError('price, stock_quantity, and product_sales must all be numbers >= 0.')
 		return data
 
 
-class ValidateIntegerSerializer(serializers.Serializer):
+class ValidatePurchaseSerializer(serializers.Serializer):
 	"""Validates that object value at 'stock_to_purchase' is an integer."""
 	stock_to_purchase = serializers.IntegerField()
 
-	def validate(self, data):
-		try:
-			return int(data['stock_to_purchase'])
-		except (ValueError, TypeError):
-			raise serializers.ValidationError('stock quantity must be an integer >= 0.')
+	def validate_stock_to_purchase(self, data):
+		if int(data) >= 0:
+			return data
+		else:
+			raise serializers.ValidationError('stock_to_purchase must be an integer >= 0.')
+
+
+class ValidateAddStockSerializer(serializers.Serializer):
+	"""Validates that object value at 'stock_to_purchase' is an integer."""
+	stock_to_add = serializers.IntegerField()
+
+	def validate_stock_to_add(self, data):
+		if int(data) >= 0:
+			return data
+		else:
+			raise serializers.ValidationError('stock_to_add must be an integer >= 0.')
 
 
 # class UserSerializer(serializers.ModelSerializer):
