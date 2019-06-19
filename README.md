@@ -1,6 +1,6 @@
 # Djamazon
 
-## Deployed Link
+## Deployed Browsable API Link
 https://djamazon.herokuapp.com/
 
 ![](./assets/images/djamazon-cropped.png)
