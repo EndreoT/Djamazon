@@ -4,3 +4,4 @@ djangorestframework_simplejwt==4.3.0
 gunicorn==19.9.0
 django-heroku
 coreapi
+pyyaml
