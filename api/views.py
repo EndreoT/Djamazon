@@ -43,17 +43,17 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
     # Can only write if authenticated
-    # permission_classes = (IsManagerOrReadOnly,)
+    permission_classes = (IsManagerOrReadOnly,)
 
     # Links user creater to created_by field
-    def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
+    # def perform_create(self, serializer):
+    #     serializer.save(created_by=self.request.user)
 
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    # permission_classes = (IsSupervisorOrReadOnly | IsManager,)
+    permission_classes = (IsSupervisorOrReadOnly | IsManager,)
 
     def get_serializer_class(self):
         if self.action == 'purchase_product':
@@ -65,7 +65,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     @action(
         methods=['put'], detail=True,
-        # permission_classes=[IsCustomer],
+        permission_classes=[IsCustomer],
         url_path='purchase', url_name='purchase'
     )
     # route on api/products/<pk>/purchase
@@ -81,7 +81,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     @action(
         methods=['get', 'put'], detail=True,
-        # permission_classes=[IsSupervisor | IsManager],
+        permission_classes=[IsSupervisor | IsManager],
         url_path='add_stock', url_name='add_stock'
     )
     def add_stock(self, request, pk=None):

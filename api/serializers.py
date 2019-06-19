@@ -37,14 +37,19 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class DepartmentSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
     # allows lookup of all product ids for each department
-    products = serializers.HyperlinkedRelatedField(
-        view_name='product-detail', many=True, queryset=Product.objects.all())
+    # products = serializers.HyperlinkedModelSerializer(
+        # view_name='product-detail', 
+        # source='product', many=True, 
+        # queryset=Product.objects.all(), 
+        # allow_null=False, required=True)
+
     # Changes which attribute is used to populate a field
     created_by = serializers.ReadOnlyField(source="created_by.username")
 
     class Meta:
         model = Department
-        fields = '__all__'  # shorthand for all fields
+        # fields = '__all__'  # shorthand for all fields
+        fields = ('id', 'url', 'name', 'created_by', 'over_head_costs')
 
 
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
@@ -57,7 +62,7 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'url', 'name', 'department_name',
                   'price', 'stock_quantity', 'product_sales')
 
-    def validate_department_name(self, data):
+    def validate(self, data):
         if data['price'] < 0 or data['stock_quantity'] < 0 or data['product_sales'] < 0:
             raise serializers.ValidationError(
                 'price, stock_quantity, and product_sales must all be numbers >= 0.')
@@ -69,7 +74,7 @@ class ValidatePurchaseSerializer(serializers.Serializer):
     stock_to_purchase = serializers.IntegerField()
 
     def validate_stock_to_purchase(self, data):
-        if int(data) >= 0:
+        if data >= 0:
             return data
         else:
             raise serializers.ValidationError(
@@ -81,7 +86,7 @@ class ValidateAddStockSerializer(serializers.Serializer):
     stock_to_add = serializers.IntegerField()
 
     def validate_stock_to_add(self, data):
-        if int(data) >= 0:
+        if data >= 0:
             return data
         else:
             raise serializers.ValidationError(
