@@ -3,7 +3,7 @@
 ## Deployed Link
 https://djamazon.herokuapp.com/
 
-![](./assets/images/djamazon-cropped.PNG)
+![](./assets/images/djamazon-cropped.png)
 
 ## Description
 Djamazon is an 'Amazon' like store API allowing customer, supervisor, and manager interaction with the Djamzon database
