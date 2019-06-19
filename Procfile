@@ -1,1 +1,1 @@
-web: gunicorn djamazon.wsgi
+web: gunicorn Djamazon.wsgi
