@@ -23,10 +23,10 @@ from .permissions import IsCustomer, IsSupervisorOrReadOnly, IsSupervisor, IsMan
 
 # Viewsets combine both list and detail views into single view
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
-    # permission_classes = (permissions.IsAdminUser | IsManager,)
+    # permission_classes = (permissions.IsAdminUser,)
 
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
@@ -45,7 +45,7 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     # Can only write if authenticated
     permission_classes = (IsManagerOrReadOnly,)
 
-    # Links user creater to created_by field
+    # Links user creater to created_by field # TODO allow for created_by field
     # def perform_create(self, serializer):
     #     serializer.save(created_by=self.request.user)
 
@@ -84,6 +84,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         permission_classes=[IsSupervisor | IsManager],
         url_path='add_stock', url_name='add_stock'
     )
+    # route on api/products/<pk>/purchase
     def add_stock(self, request, pk=None):
         product = Product.objects.get(pk=pk)
         stockToAdd = request.data

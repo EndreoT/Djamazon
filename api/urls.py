@@ -27,7 +27,7 @@ urlpatterns = [
 
 
 
-
+# OLD URL PATHS
 
 # Url patterns using Viewset classes
 # user_list = UserViewSet.as_view({

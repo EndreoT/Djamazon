@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from .models import Department, Product
 
-# HyperlinkedModelSerializer has field 'url'
+# HyperlinkedModelSerializer creates field 'url'
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -36,7 +36,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
 class DepartmentSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
-    # allows lookup of all product ids for each department
+    # allows lookup of all product ids for each department # TODO fix this lookup
     # products = serializers.HyperlinkedModelSerializer(
         # view_name='product-detail', 
         # source='product', many=True, 
@@ -48,8 +48,7 @@ class DepartmentSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Department
-        # fields = '__all__'  # shorthand for all fields
-        fields = ('id', 'url', 'name', 'created_by', 'over_head_costs')
+        fields = '__all__'  # shorthand for all fields
 
 
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
@@ -70,7 +69,7 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ValidatePurchaseSerializer(serializers.Serializer):
-    """Validates that object value at 'stock_to_purchase' is an integer."""
+    """Validates object value at 'stock_to_purchase' is an integer."""
     stock_to_purchase = serializers.IntegerField()
 
     def validate_stock_to_purchase(self, data):
@@ -82,7 +81,7 @@ class ValidatePurchaseSerializer(serializers.Serializer):
 
 
 class ValidateAddStockSerializer(serializers.Serializer):
-    """Validates that object value at 'stock_to_purchase' is an integer."""
+    """Validates object value at 'stock_to_purchase' is an integer."""
     stock_to_add = serializers.IntegerField()
 
     def validate_stock_to_add(self, data):
