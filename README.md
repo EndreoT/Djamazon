@@ -6,7 +6,7 @@ https://djamazon.herokuapp.com/
 ![](./assets/images/djamazon-cropped.png)
 
 ## Description
-Djamazon is an 'Amazon' like store API allowing customer, supervisor, and manager interaction with the Djamzon database
+Djamazon is an 'Amazon' like store API allowing customer, supervisor, and manager interaction with the Djamazon database
 
 ## Motivation
 This project sets up an easy to use RESTful API backend ready for a user interface implementation 
